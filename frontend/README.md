@@ -6,47 +6,47 @@
 
 
 
-##### 前端架构第一周成果（4月1日-4月7日）
+##### 前端架构第一周成果
 
-&nbsp;前端架构完成了基础框架搭建，为团队开发打下坚实基础！
-
-
-
-&nbsp;已完成功能
-
-&nbsp;Vue 3 + TypeScript + Vite 现代化项目框架
+ 前端架构完成了基础框架搭建，为团队开发打下坚实基础！
 
 
 
-&nbsp;Element Plus UI组件库集成
+ 已完成功能
+
+ Vue 3 + TypeScript + Vite 现代化项目框架
 
 
 
-&nbsp;Vue Router路由系统配置
+ Element Plus UI组件库集成
 
 
 
-&nbsp;Pinia状态管理基础
+ Vue Router路由系统配置
 
 
 
-&nbsp;ESLint + Prettier代码规范
+ Pinia状态管理基础
 
 
 
-&nbsp;开发/生产双环境配置
+ ESLint + Prettier代码规范
 
 
 
-&nbsp;4个核心页面（首页、登录、注册、404）
+ 开发/生产双环境配置
 
 
 
-&nbsp;生产构建打包优化
+ 4个核心页面（首页、登录、注册、404）
 
 
 
-&nbsp;技术栈
+ 生产构建打包优化
+
+
+
+ 技术栈
 
 核心框架
 
@@ -92,7 +92,7 @@ Vue-tsc - Vue TypeScript编译器
 
 
 
-&nbsp;项目结构
+ 项目结构
 
 text
 
