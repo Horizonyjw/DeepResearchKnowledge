@@ -1,0 +1,5 @@
+{
+  "task": "pipeline.generate_report",
+  "args": ["{report_id}"],
+  "description": "Create evidence pack, run OpenManus stub, store report and citations."
+}
