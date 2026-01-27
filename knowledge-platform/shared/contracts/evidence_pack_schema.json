@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Evidence Pack",
+  "type": "object",
+  "required": ["report_id", "generated_at", "documents"],
+  "properties": {
+    "report_id": {"type": "string"},
+    "generated_at": {"type": "string"},
+    "documents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source_id", "title", "url", "chunks"],
+        "properties": {
+          "source_id": {"type": "string"},
+          "title": {"type": "string"},
+          "url": {"type": "string"},
+          "doi": {"type": "string"},
+          "authors": {"type": "string"},
+          "year": {"type": "integer"},
+          "venue": {"type": "string"},
+          "chunks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["chunk_id", "text"],
+              "properties": {
+                "chunk_id": {"type": "string"},
+                "text": {"type": "string"},
+                "section_path": {"type": "string"},
+                "offset_start": {"type": "integer"},
+                "offset_end": {"type": "integer"}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
