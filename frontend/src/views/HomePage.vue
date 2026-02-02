@@ -1,206 +1,388 @@
 <template>
   <div class="home-page">
-    <div class="header">
-      <h1>深知DeepResearch</h1>
-      <p class="subtitle">智能科研助手 - 基于AI的深度研究平台</p>
-    </div>
-    
-    <div class="content">
-      <div class="card">
-        <h2>🎉 第一周成果</h2>
-        <ul>
-          <li>✅ Vue 3 + TypeScript 项目框架搭建完成</li>
-          <li>✅ Vite构建工具配置完成</li>
-          <li>✅ Element Plus UI库集成</li>
-          <li>✅ Vue Router路由系统就绪</li>
-          <li>✅ 开发服务器正常运行</li>
-        </ul>
-      </div>
-      
-      <div class="card">
-        <h2>🚀 快速开始</h2>
-        <div class="buttons">
-          <el-button type="primary" size="large" @click="$router.push('/login')">
-            开始使用
-          </el-button>
-          <el-button size="large" @click="$router.push('/register')">
-            注册账号
-          </el-button>
+    <!-- 标语区域 -->
+    <div class="slogan-section">
+      <div class="slogan-container">
+        <h2 class="slogan-text">Make in-depth research accessible to all</h2>
+        <div class="slogan-decoration">
+          <span class="decoration-line"></span>
+          <i class="decoration-icon"></i>
+          <span class="decoration-line"></span>
         </div>
       </div>
-      
-      <div class="team-info">
-        <h3>👥 团队分工</h3>
-        <div class="team-roles">
-          <div class="role">
-            <span class="role-icon">🎨</span>
-            <div>
-              <strong>UI视觉</strong>
-              <p>负责界面设计和视觉规范</p>
-            </div>
-          </div>
-          <div class="role">
-            <span class="role-icon">🖱️</span>
-            <div>
-              <strong>交互逻辑</strong>
-              <p>负责用户交互和体验优化</p>
-            </div>
-          </div>
-          <div class="role">
-            <span class="role-icon">⚙️</span>
-            <div>
-              <strong>前端架构</strong>
-              <p>负责技术框架和工程化</p>
-            </div>
-          </div>
-          <div class="role">
-            <span class="role-icon">🤖</span>
-            <div>
-              <strong>AI智能体</strong>
-              <p>负责深度研究算法</p>
-            </div>
-          </div>
-          <div class="role">
-            <span class="role-icon">🗄️</span>
-            <div>
-              <strong>数据库</strong>
-              <p>负责数据存储和检索</p>
-            </div>
-          </div>
-          <div class="role">
-            <span class="role-icon">🔌</span>
-            <div>
-              <strong>API接口</strong>
-              <p>负责后端服务和接口</p>
-            </div>
-          </div>
+    </div>
+
+    <!-- 搜索区域 - 置于页面最下方 -->
+    <div class="search-section">
+      <div class="search-wrapper">
+        <!-- 搜索框容器 -->
+        <div class="search-container">
+          <!-- 搜索图标 -->
+          <i class="search-icon"></i>
+          <!-- 搜索输入框 -->
+          <input 
+            type="text" 
+            class="search-input" 
+            placeholder="输入关键词搜索..." 
+          />
+          <!-- 搜索按钮 -->
+          <button class="search-button">
+            搜索
+          </button>
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<script setup lang="ts">
-// 首页组件
+<script setup>
+// 首页组件逻辑
 </script>
 
-<style scoped>
-.home-page {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  padding: 40px;
-}
-
-.header {
-  text-align: center;
-  margin-bottom: 50px;
-}
-
-.header h1 {
-  font-size: 3rem;
-  color: #1890ff;
-  margin-bottom: 10px;
-}
-
-.subtitle {
-  font-size: 1.2rem;
-  color: #666;
-}
-
-.content {
-  max-width: 1000px;
-  margin: 0 auto;
-}
-
-.card {
-  background: white;
-  border-radius: 12px;
-  padding: 30px;
-  margin-bottom: 30px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.card h2 {
-  color: #333;
-  margin-bottom: 20px;
-}
-
-.card ul {
-  list-style: none;
+<style scoped lang="scss">
+/* ====================标语区域样式 ==================== */
+.slogan-section {
+  width: 100%;
   padding: 0;
-}
-
-.card li {
-  padding: 8px 0;
-  color: #555;
-}
-
-.card li:before {
-  content: "✓ ";
-  color: #52c41a;
-  font-weight: bold;
-}
-
-.buttons {
-  display: flex;
-  gap: 20px;
+  margin-top: 0;
+  margin-bottom: 0;
+  position: relative; 
+  top: 0; 
+  left: 0; 
+  transform: none; 
+  z-index: 1;
+  height: 70vh; 
+  display: flex; 
+  align-items: center;
   justify-content: center;
-  margin-top: 20px;
+  margin-top: -60px;
 }
 
-.team-info {
-  margin-top: 50px;
+.slogan-container {
   text-align: center;
+  padding: 0;
+  position: relative;
+  width: 100%;
+  max-width: 3600px;
+  margin: 0 auto;
+  padding: 0 72px;
+  box-sizing: border-box;
 }
 
-.team-info h3 {
-  color: #333;
-  margin-bottom: 30px;
+.slogan-text {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 7.6rem; 
+  font-weight: 700;
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+  margin-bottom: 12px;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  opacity: 0.15; 
+  width: 100%;
+  pointer-events: none;
 }
 
-.team-roles {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
-  margin-top: 20px;
-}
-
-.role {
-  background: white;
-  border-radius: 10px;
-  padding: 20px;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s;
-}
-
-.role:hover {
-  transform: translateY(-5px);
-}
-
-.role-icon {
-  font-size: 2rem;
-  width: 60px;
-  height: 60px;
+.slogan-decoration {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f0f7ff;
-  border-radius: 50%;
+  gap: 24px;
+  margin-top: 8px;
+  margin-bottom: 12px;
+  position: relative;
+  z-index: 2;
 }
 
-.role strong {
-  display: block;
-  color: #1890ff;
-  margin-bottom: 5px;
-  font-size: 1.1rem;
+.decoration-line {
+  flex: 1;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #06b6d4, transparent);
+  border-radius: 9999px;
+  opacity: 0.5; 
 }
 
-.role p {
-  color: #666;
-  margin: 0;
-  font-size: 0.9rem;
+.decoration-icon {
+  font-size: 2.8rem;
+  color: #06b6d4;
+  animation: pulse 2s infinite;
+  opacity: 0.5; 
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.3; transform: scale(1); } 
+  50% { opacity: 0.6; transform: scale(1.1); } 
+}
+
+/* ==================== 搜索区域样式 ==================== */
+
+/* 搜索区域容器 */
+.search-section {
+  width: 100%;
+  padding: 0;
+  margin-top: auto; 
+  margin-bottom: 0; 
+  position: relative;
+  z-index: 10;
+  padding-bottom: 0;
+  margin-bottom: 0;
+  transform: translateY(12rem);
+}
+
+.search-wrapper {
+  width: 100%;
+  max-width: 4200px;
+  margin: 0 auto;
+  padding: 0 72px;
+  box-sizing: border-box;
+}
+
+/* 搜索框整体容器 */
+.search-container {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  border: 5px solid #3b82f6;
+  border-radius: 4rem;
+  padding: 32px 65px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  transition: all 300ms ease;
+  height: auto;
+  position: relative; 
+  width: 100%;
+  
+  &:hover {
+    border-color: #1d4ed8;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    transform: translateY(-6px);
+  }
+  
+  &:focus-within {
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 6px rgba(139, 92, 246, 0.2);
+  }
+}
+
+/* 搜索图标 */
+.search-icon {
+  font-size: 4.2rem;
+  color: #94a3b8;
+  margin-right: 48px;
+  flex-shrink: 0;
+}
+
+/* 搜索输入框 */
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 3.6rem;
+  padding: 24px 280px 24px 0; 
+  color: #0f172a;
+  min-width: 0;
+  background-color: transparent;
+  font-weight: 500;
+  letter-spacing: 0.8px;
+  height: 8rem;
+  
+  &::placeholder {
+    color: #94a3b8;
+    font-size: 4rem; 
+    font-weight: 400;
+  }
+}
+
+/* 搜索按钮 */
+.search-button {
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  color: #ffffff;
+  border: none;
+  padding: 28px 80px;
+  border-radius: 2.5rem;
+  font-size: 4rem; 
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 300ms ease;
+  white-space: nowrap;
+  letter-spacing: 1px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  position: absolute; 
+  right: 20px; 
+  bottom: 20px; 
+  overflow: hidden;
+  height: 10rem; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.22), transparent);
+    transition: left 0.5s;
+  }
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+    
+    &::before {
+      left: 100%;
+    }
+  }
+  
+  &:active {
+    transform: translateY(-2px);
+  }
+}
+
+/* ==================== 响应式设计 ==================== */
+
+/* 平板设备适配（宽度 ≤ 768px） */
+@media (max-width: 768px) {
+  .slogan-section {
+    padding: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    position: relative;
+    top: 0;
+    left: 0;
+    transform: none;
+    height: 50vh; 
+    margin-top: -30px;
+  }
+  
+  .slogan-container {
+    padding: 0 1rem;
+    max-width: 100%;
+  }
+  
+  .slogan-text {
+    font-size: 3.8rem; 
+    opacity: 0.1; 
+  }
+  
+  .decoration-icon {
+    font-size: 1.5rem;
+  }
+  
+  .slogan-decoration {
+    gap: 0.75rem;
+    margin-top: 0.25rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .search-section {
+    padding: 0;
+    margin-bottom: 0; 
+    padding-bottom: 0;
+    margin-bottom: 0;
+    transform: translateY(5rem);
+  }
+  
+  .search-wrapper {
+    padding: 0 1rem;
+    max-width: 100%;
+  }
+  
+  .search-container {
+    padding: 0.75rem 1rem;
+    border-radius: 2.5rem;
+  }
+  
+  .search-icon {
+    font-size: 1.25rem;
+    margin-right: 0.75rem;
+  }
+  
+  .search-input {
+    font-size: 1.125rem;
+    height: auto; 
+    padding: 0.5rem 1.5rem 0.5rem 0.5rem;
+    
+    &::placeholder {
+      font-size: 1.125rem;
+    }
+  }
+  
+  .search-button {
+    position: static; 
+    padding: 0.5rem 1.5rem;
+    font-size: 1rem;
+    margin-left: 0.75rem;
+    height: auto; 
+  }
+}
+
+/* 手机设备适配（宽度 ≤ 480px） */
+@media (max-width: 480px) {
+  .slogan-section {
+    height: 40vh;
+    margin-top: -20px;
+  }
+  
+  .slogan-container {
+    padding: 0 0.75rem;
+  }
+  
+  .slogan-text {
+    font-size: 2.5rem; 
+    opacity: 0.08; 
+  }
+  
+  .slogan-decoration {
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .search-section {
+    padding: 0; 
+    margin-bottom: 0; 
+    padding-bottom: 0;
+    margin-bottom: 0;
+    transform: translateY(3rem);
+  }
+  
+  .search-wrapper {
+    padding: 0 0.75rem;
+  }
+  
+  .search-container {
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem;
+    border-radius: 0.75rem;
+  }
+  
+  .search-icon {
+    display: none;
+  }
+  
+  .search-input {
+    text-align: center;
+    padding: 0.5rem;
+    height: auto; 
+    
+    &::placeholder {
+      font-size: 1rem; 
+    }
+  }
+  
+  .search-button {
+    width: 100%;
+    margin-left: 0;
+    border-radius: 0.5rem;
+    height: auto; 
+    position: static; 
+    font-size: 1rem;
+  }
 }
 </style>
