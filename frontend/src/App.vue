@@ -24,6 +24,11 @@
           <i class="nav-icon"></i>
           <span class="nav-text">偏好设置</span>
         </router-link>
+        
+        <router-link to="/user" class="nav-link">
+          <i class="nav-icon"></i>
+          <span class="nav-text">用户中心</span>
+        </router-link>
       </div>
     </nav>
 
@@ -43,6 +48,14 @@
 </script>
 
 <style lang="scss">
+
+body {
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  min-height: 100vh;
+}
+
 /* 强制显示所有导航内容 */
 .nav-link * {
   display: inline-block !important;

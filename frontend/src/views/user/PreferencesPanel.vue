@@ -261,9 +261,7 @@ $sidebar-width: 16rem;             // 256px - 侧边栏宽度
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, $color-gray-50 0%, $color-gray-100 100%);
   padding: $spacing-24;
-  /* 移除向下平移：transform: translateY(240px); */
 }
 
 /* 设置卡片 */

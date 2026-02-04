@@ -8,6 +8,7 @@ const RegisterPage = () => import('@/views/auth/RegisterPage.vue')
 const ResearchPage = () => import('@/views/research/ResearchPage.vue')
 const NotFoundPage = () => import('@/views/error/NotFoundPage.vue')
 const PreferencesPanel = () => import('@/views/user/PreferencesPanel.vue')
+const UserProfile = () => import('@/views/user/UserProfile.vue')
 
 const routes: RouteRecordRaw[] = [
   {
@@ -39,6 +40,14 @@ const routes: RouteRecordRaw[] = [
     name: 'Preferences',
     component: PreferencesPanel,
     meta: { title: '偏好设置 - 深知DeepResearch' }
+  },
+
+  // 用户中心路由
+  {
+    path: '/user',
+    name: 'User',
+    component: UserProfile,
+    meta: { title: '用户中心 - 深知DeepResearch' } 
   },
   
   // profile重定向

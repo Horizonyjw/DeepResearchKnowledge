@@ -97,7 +97,7 @@
       <div class="auth-footer">
         <p class="footer-text">
           还没有账号？
-          <a href="#" class="footer-link">立即注册</a>
+          <router-link to="/register" class="footer-link">立即注册</router-link>
         </p>
       </div>
     </div>
@@ -219,7 +219,6 @@ $sidebar-width: 16rem;             // 256px - 侧边栏宽度
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, $color-gray-50 0%, $color-gray-100 100%);
   padding: $spacing-24; 
   transform: translateY(calc(-100% / 6));
 }
@@ -283,7 +282,7 @@ $sidebar-width: 16rem;             // 256px - 侧边栏宽度
 
   .form-input {
     width: 100%;
-    padding: $spacing-12 $spacing-16 $spacing-12 $spacing-32;
+    padding: $spacing-12 $spacing-16 $spacing-12 $spacing-16;
     font-size: $font-size-5xl;
     color: $color-gray-900;
     background: $color-white;
