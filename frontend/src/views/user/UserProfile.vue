@@ -159,12 +159,12 @@ $transition-slow: 500ms ease;
 /* 主容器 */
 .user-profile {
   width: 100%;
-  max-width: 144rem; 
-  margin: 0 auto; 
-  padding: $spacing-32; 
+  max-width: 48rem; 
+  margin: 2rem auto; 
+  padding: $spacing-8; 
   background: $color-white;
-  border-radius: $border-radius-5xl; 
-  border: 3px solid $color-gray-200; 
+  border-radius: $border-radius-xl; 
+  border: 1px solid $color-gray-200; 
   min-height: auto; 
   display: flex;
   flex-direction: column;
@@ -175,14 +175,13 @@ $transition-slow: 500ms ease;
 
 /* 页面标题 */
 .profile-title {
-  font-size: $font-size-8xl; 
-  font-weight: $font-weight-extrabold;
+  font-size: $font-size-2xl; 
+  font-weight: $font-weight-bold;
   color: $color-gray-900;
-  margin-bottom: $spacing-32;
+  margin-bottom: $spacing-6;
   text-align: center;
   position: relative;
-  padding-bottom: $spacing-16;
-  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  padding-bottom: $spacing-4;
 
   &::after {
     content: '';
@@ -190,8 +189,8 @@ $transition-slow: 500ms ease;
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 160px; 
-    height: 8px;
+    width: 4rem; 
+    height: 3px;
     background: linear-gradient(90deg, $color-primary, $color-secondary);
     border-radius: $border-radius-full;
   }
@@ -202,19 +201,19 @@ $transition-slow: 500ms ease;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: $spacing-20; 
-  margin-bottom: $spacing-32;
-  padding-bottom: $spacing-32;
-  border-bottom: 6px solid $color-gray-200;
+  gap: $spacing-4; 
+  margin-bottom: $spacing-6;
+  padding-bottom: $spacing-6;
+  border-bottom: 2px solid $color-gray-200;
 }
 
 .avatar-placeholder {
-  width: 280px; 
-  height: 280px;
+  width: 8rem; 
+  height: 8rem;
   border-radius: $border-radius-full;
   overflow: hidden;
-  border: 10px solid $color-white;
-  box-shadow: $shadow-3xl;
+  border: 4px solid $color-white;
+  box-shadow: $shadow-md;
   background: linear-gradient(135deg, $color-primary, $color-secondary);
   display: flex;
   align-items: center;
@@ -222,9 +221,8 @@ $transition-slow: 500ms ease;
   
   .avatar-initial {
     color: $color-white;
-    font-size: $font-size-8xl;
-    font-weight: $font-weight-extrabold;
-    text-shadow: 0 8px 16px rgba(0, 0, 0, 0.4); 
+    font-size: $font-size-3xl;
+    font-weight: $font-weight-bold;
   }
 }
 
@@ -232,10 +230,10 @@ $transition-slow: 500ms ease;
 .profile-form {
   display: flex;
   flex-direction: column;
-  gap: $spacing-20;
-  margin-bottom: $spacing-32;
-  width: 80%;
-  max-width: 2000px; 
+  gap: $spacing-4;
+  margin-bottom: $spacing-6;
+  width: 100%;
+  max-width: 100%; 
   margin-left: auto;
   margin-right: auto;
 }
@@ -248,25 +246,25 @@ $transition-slow: 500ms ease;
 }
 
 .label {
-  font-size: $font-size-6xl; 
-  font-weight: $font-weight-bold;
+  font-size: $font-size-sm; 
+  font-weight: $font-weight-medium;
   color: $color-gray-800;
-  margin-bottom: $spacing-6;
+  margin-bottom: $spacing-1;
   
   &::after {
     content: ':';
-    margin-left: $spacing-4;
+    margin-left: $spacing-1;
   }
 }
 
 .form-input {
-  padding: $spacing-16 $spacing-20; 
-  font-size: $font-size-6xl; 
-  font-weight: $font-weight-medium;
+  padding: $spacing-2 $spacing-3; 
+  font-size: $font-size-base; 
+  font-weight: $font-weight-normal;
   color: $color-gray-900;
   background: $color-white;
-  border: 8px solid $color-gray-300; 
-  border-radius: $border-radius-3xl;
+  border: 1px solid $color-gray-300; 
+  border-radius: $border-radius-lg;
   transition: all $transition-base;
   width: 100%; 
   max-width: 100%; 
@@ -275,7 +273,7 @@ $transition-slow: 500ms ease;
   &:focus {
     outline: none;
     border-color: $color-primary;
-    box-shadow: 0 0 0 16px rgba($color-primary, 0.15); 
+    box-shadow: 0 0 0 3px rgba($color-primary, 0.1); 
   }
   
   &:disabled {
@@ -287,10 +285,10 @@ $transition-slow: 500ms ease;
 }
 
 .form-hint {
-  font-size: $font-size-4xl; 
+  font-size: $font-size-xs; 
   color: $color-gray-500;
-  margin-top: $spacing-4;
-  margin-left: $spacing-4;
+  margin-top: $spacing-1;
+  margin-left: $spacing-1;
   font-weight: $font-weight-normal;
 }
 
@@ -299,33 +297,33 @@ $transition-slow: 500ms ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: $spacing-16 $spacing-32; 
-  font-size: $font-size-6xl; 
-  font-weight: $font-weight-bold; 
-  border-radius: $border-radius-3xl;
-  border: 8px solid transparent;
+  padding: $spacing-2 $spacing-4; 
+  font-size: $font-size-base; 
+  font-weight: $font-weight-medium; 
+  border-radius: $border-radius-lg;
+  border: 2px solid transparent;
   cursor: pointer;
   transition: all $transition-base;
   text-decoration: none;
   user-select: none;
   white-space: nowrap;
-  gap: $spacing-12;
-  min-width: 300px; 
+  gap: $spacing-2;
+  min-width: 8rem; 
   
   &:focus {
-    outline: 8px solid rgba($color-primary, 0.3); 
-    outline-offset: 6px;
+    outline: 3px solid rgba($color-primary, 0.3); 
+    outline-offset: 2px;
   }
   
   &:active {
-    transform: translateY(3px);
+    transform: translateY(1px);
   }
   
   /* 小按钮 */
   &-sm {
-    padding: $spacing-12 $spacing-24;
-    font-size: $font-size-5xl; 
-    min-width: 200px;
+    padding: $spacing-1.5 $spacing-3;
+    font-size: $font-size-sm; 
+    min-width: 6rem;
   }
   
   /* 主要按钮 */
@@ -336,8 +334,8 @@ $transition-slow: 500ms ease;
     
     &:hover {
       background: linear-gradient(135deg, darken($color-primary, 12%), darken($color-secondary, 12%));
-      box-shadow: $shadow-3xl;
-      transform: translateY(-6px);
+      box-shadow: $shadow-md;
+      transform: translateY(-2px);
     }
   }
   
@@ -350,7 +348,7 @@ $transition-slow: 500ms ease;
     &:hover {
       background: rgba($color-primary, 0.12);
       border-color: darken($color-primary, 18%);
-      transform: translateY(-3px);
+      transform: translateY(-1px);
     }
   }
 }
@@ -360,16 +358,16 @@ $transition-slow: 500ms ease;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: $spacing-20;
-  margin-top: $spacing-32;
+  gap: $spacing-4;
+  margin-top: $spacing-6;
 }
 
 /* 保存信息区域 */
 .save-message {
-  min-height: $font-size-5xl; 
-  font-size: $font-size-5xl; 
+  min-height: $font-size-base; 
+  font-size: $font-size-sm; 
   text-align: center;
-  padding: $spacing-12;
+  padding: $spacing-2;
   
   &.success {
     color: $color-success;
@@ -388,40 +386,39 @@ $transition-slow: 500ms ease;
 /* 响应式调整 */
 @media (max-width: 1200px) {
   .user-profile {
-    max-width: 110rem;
-    padding: $spacing-24 $spacing-20;
-    top: 6vh;
-    margin: 15vh auto 8vh;
+    max-width: 42rem;
+    padding: $spacing-6 $spacing-4;
+    margin: 2rem auto;
   }
   
   .profile-title {
-    font-size: $font-size-7xl;
+    font-size: $font-size-xl;
   }
   
   .avatar-placeholder {
-    width: 220px;
-    height: 220px;
+    width: 6rem;
+    height: 6rem;
   }
   
   .label {
-    font-size: $font-size-5xl;
+    font-size: $font-size-sm;
   }
   
   .form-input {
-    font-size: $font-size-5xl;
-    border-width: 6px;
+    font-size: $font-size-sm;
+    border-width: 1px;
   }
   
   .form-hint {
-    font-size: $font-size-3xl;
+    font-size: $font-size-xs;
   }
   
   .btn {
-    font-size: $font-size-5xl;
-    padding: $spacing-12 $spacing-24;
+    font-size: $font-size-sm;
+    padding: $spacing-2 $spacing-3;
     
     &-sm {
-      font-size: $font-size-4xl;
+      font-size: $font-size-xs;
     }
   }
 }
@@ -429,98 +426,96 @@ $transition-slow: 500ms ease;
 @media (max-width: 768px) {
   .user-profile {
     max-width: 95%;
-    padding: $spacing-20 $spacing-16;
-    border-width: 4px;
-    top: 4vh;
-    margin: 12vh auto 6vh;
+    padding: $spacing-4 $spacing-3;
+    border-width: 1px;
+    margin: 1rem auto;
   }
   
   .profile-title {
-    font-size: $font-size-6xl;
+    font-size: $font-size-lg;
   }
   
   .avatar-placeholder {
-    width: 180px;
-    height: 180px;
+    width: 5rem;
+    height: 5rem;
   }
   
   .profile-form {
-    width: 90%;
+    width: 100%;
   }
   
   .label,
   .form-input,
   .btn,
   .form-hint {
-    font-size: $font-size-4xl;
+    font-size: $font-size-sm;
   }
   
   .form-input {
-    border-width: 5px;
-    padding: $spacing-12 $spacing-16;
+    border-width: 1px;
+    padding: $spacing-2 $spacing-3;
   }
   
   .btn {
-    padding: $spacing-10 $spacing-20;
-    border-width: 5px;
-    min-width: 250px;
+    padding: $spacing-2 $spacing-3;
+    border-width: 1px;
+    min-width: 7rem;
     
     &-sm {
-      padding: $spacing-8 $spacing-16;
-      font-size: $font-size-3xl;
-      min-width: 180px;
+      padding: $spacing-1.5 $spacing-2;
+      font-size: $font-size-xs;
+      min-width: 5rem;
     }
   }
 }
 
 @media (max-width: 480px) {
   .user-profile {
-    padding: $spacing-16 $spacing-12;
-    border-width: 3px;
-    top: 3vh;
-    margin: 10vh auto 5vh;
+    padding: $spacing-3 $spacing-2;
+    border-width: 1px;
+    margin: 1rem auto;
   }
   
   .profile-title {
-    font-size: $font-size-5xl;
+    font-size: $font-size-base;
   }
   
   .avatar-placeholder {
-    width: 140px;
-    height: 140px;
+    width: 4rem;
+    height: 4rem;
   }
   
   .profile-form {
-    width: 95%;
+    width: 100%;
   }
   
   .label,
   .form-input,
   .btn,
   .form-hint {
-    font-size: $font-size-3xl;
+    font-size: $font-size-xs;
   }
   
   .form-input {
-    border-width: 4px;
-    padding: $spacing-8 $spacing-12;
+    border-width: 1px;
+    padding: $spacing-1.5 $spacing-2;
   }
   
   .btn {
-    padding: $spacing-8 $spacing-16;
-    border-width: 4px;
-    min-width: 200px;
-    font-size: $font-size-3xl;
+    padding: $spacing-1.5 $spacing-2;
+    border-width: 1px;
+    min-width: 6rem;
+    font-size: $font-size-xs;
     
     &-sm {
-      padding: $spacing-6 $spacing-12;
-      font-size: $font-size-2xl;
-      min-width: 150px;
+      padding: $spacing-1 $spacing-1.5;
+      font-size: $font-size-xs;
+      min-width: 4rem;
     }
   }
   
   .save-message {
-    font-size: $font-size-3xl;
+    font-size: $font-size-xs;
   }
 }
 
@@ -531,9 +526,9 @@ $transition-slow: 500ms ease;
 
 .loading {
   display: inline-block;
-  width: $spacing-16;
-  height: $spacing-16;
-  border: 4px solid rgba($color-gray-300, 0.3);
+  width: $spacing-4;
+  height: $spacing-4;
+  border: 2px solid rgba($color-gray-300, 0.3);
   border-top-color: $color-primary;
   border-radius: 50%;
   animation: spin 1s linear infinite;

@@ -261,48 +261,48 @@ $sidebar-width: 16rem;             // 256px - 侧边栏宽度
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: $spacing-24;
+  padding: $spacing-6;
 }
 
 /* 设置卡片 */
 .preferences-card {
   width: 100%;
-  max-width: 144rem;
+  max-width: 52rem;
   background: $color-white;
-  border-radius: $border-radius-5xl;
-  padding: $spacing-32;
-  box-shadow: $shadow-3xl;
-  border: 3px solid $color-gray-200;
+  border-radius: $border-radius-xl;
+  padding: $spacing-8;
+  box-shadow: $shadow-xl;
+  border: 1px solid $color-gray-200;
 }
 
 /* 设置头部 */
 .preferences-header {
   text-align: center;
-  margin-bottom: $spacing-32;
-  padding-bottom: $spacing-24;
-  border-bottom: 3px solid $color-gray-200;
+  margin-bottom: $spacing-8;
+  padding-bottom: $spacing-6;
+  border-bottom: 1px solid $color-gray-200;
   
   .preferences-title {
-    font-size: $font-size-7xl;
+    font-size: $font-size-2xl;
     font-weight: $font-weight-bold;
     color: $color-gray-900;
-    margin-bottom: $spacing-8;
+    margin-bottom: $spacing-2;
   }
   
   .preferences-subtitle {
-    font-size: $font-size-5xl;
+    font-size: $font-size-sm;
     color: $color-gray-600;
   }
 }
 
 /* 设置内容 */
 .preferences-content {
-  margin-bottom: $spacing-32;
+  margin-bottom: $spacing-8;
 }
 
 /* 设置区块 */
 .preference-section {
-  margin-bottom: $spacing-32;
+  margin-bottom: $spacing-8;
   
   &:last-child {
     margin-bottom: 0;
@@ -312,17 +312,17 @@ $sidebar-width: 16rem;             // 256px - 侧边栏宽度
 .section-title {
   display: flex;
   align-items: center;
-  gap: $spacing-12;
-  font-size: $font-size-5xl;
+  gap: $spacing-3;
+  font-size: $font-size-lg;
   font-weight: $font-weight-semibold;
   color: $color-gray-900;
-  margin-bottom: $spacing-24;
-  padding-bottom: $spacing-12;
-  border-bottom: 4px solid $color-gray-200;
+  margin-bottom: $spacing-6;
+  padding-bottom: $spacing-3;
+  border-bottom: 2px solid $color-gray-200;
 }
 
 .section-icon {
-  font-size: $font-size-5xl;
+  font-size: $font-size-lg;
 }
 
 /* 设置项 */
@@ -330,9 +330,9 @@ $sidebar-width: 16rem;             // 256px - 侧边栏宽度
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: $spacing-16 $spacing-8;
-  margin-bottom: $spacing-16;
-  border-radius: $border-radius-3xl;
+  padding: $spacing-4 $spacing-2;
+  margin-bottom: $spacing-4;
+  border-radius: $border-radius-lg;
   transition: all $transition-base;
   
   &:hover {
@@ -346,20 +346,20 @@ $sidebar-width: 16rem;             // 256px - 侧边栏宽度
 
 .preference-label {
   flex: 1;
-  max-width: 60%;
+  max-width: 80%;
 }
 
 .preference-name {
   display: block;
-  font-size: $font-size-5xl;
+  font-size: $font-size-base;
   font-weight: $font-weight-semibold;
   color: $color-gray-900;
-  margin-bottom: $spacing-4;
+  margin-bottom: $spacing-1;
 }
 
 .preference-description {
   display: block;
-  font-size: $font-size-5xl;
+  font-size: $font-size-sm;
   color: $color-gray-600;
   line-height: 1.4;
 }
@@ -371,24 +371,24 @@ $sidebar-width: 16rem;             // 256px - 侧边栏宽度
 /* 主题选项 */
 .theme-options {
   display: flex;
-  gap: $spacing-12;
+  gap: $spacing-3;
 }
 
 .theme-option {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: $spacing-8;
-  padding: $spacing-8;
+  gap: $spacing-2;
+  padding: $spacing-2;
   background: $color-white;
-  border: 4px solid $color-gray-300;
-  border-radius: $border-radius-3xl;
+  border: 2px solid $color-gray-300;
+  border-radius: $border-radius-lg;
   cursor: pointer;
   transition: all $transition-base;
   
   &:hover {
     border-color: $color-primary;
-    transform: translateY(-8px);
+    transform: translateY(-2px);
   }
   
   &.active {
@@ -398,10 +398,10 @@ $sidebar-width: 16rem;             // 256px - 侧边栏宽度
 }
 
 .theme-preview {
-  width: 9rem;
-  height: 6rem;
-  border-radius: $border-radius-2xl;
-  border: 3px solid $color-gray-300;
+  width: 7rem;
+  height: 3rem;
+  border-radius: $border-radius-md;
+  border: 1px solid $color-gray-300;
 }
 
 .light-theme {
@@ -417,27 +417,27 @@ $sidebar-width: 16rem;             // 256px - 侧边栏宽度
 }
 
 .theme-name {
-  font-size: $font-size-4xl;
+  font-size: $font-size-xs;
   font-weight: $font-weight-medium;
   color: $color-gray-700;
 }
 
 /* 语言选择 */
 .language-select {
-  padding: $spacing-8 $spacing-16;
-  font-size: $font-size-5xl;
+  padding: $spacing-2 $spacing-4;
+  font-size: $font-size-base;
   color: $color-gray-900;
   background: $color-white;
-  border: 4px solid $color-gray-300;
-  border-radius: $border-radius-3xl;
+  border: 2px solid $color-gray-300;
+  border-radius: $border-radius-lg;
   cursor: pointer;
   transition: all $transition-base;
-  min-width: 30rem;
+  min-width: 12rem;
   
   &:focus {
     outline: none;
     border-color: $color-primary;
-    box-shadow: 0 0 0 12px rgba($color-primary, 0.1);
+    box-shadow: 0 0 0 3px rgba($color-primary, 0.1);
   }
 }
 
@@ -445,15 +445,9 @@ $sidebar-width: 16rem;             // 256px - 侧边栏宽度
 .toggle-switch {
   position: relative;
   display: inline-block;
-  width: 10.5rem;
-  height: 6rem;
+  width: 3.75rem;
+  height: 2rem;
   cursor: pointer;
-}
-
-.toggle-switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
 }
 
 .toggle-slider {
@@ -469,39 +463,35 @@ $sidebar-width: 16rem;             // 256px - 侧边栏宽度
   &:before {
     position: absolute;
     content: "";
-    height: 4.5rem;
-    width: 4.5rem;
-    left: 0.75rem;
-    bottom: 0.75rem;
+    height: 1.5rem;
+    width: 1.5rem;
+    left: 0.25rem;
+    bottom: 0.25rem;
     background-color: $color-white;
     border-radius: $border-radius-full;
     transition: all $transition-base;
   }
 }
 
-input:checked + .toggle-slider {
-  background: linear-gradient(135deg, $color-primary 0%, $color-secondary 100%);
-}
-
 input:checked + .toggle-slider:before {
-  transform: translateX(4.5rem);
+  transform: translateX(1.75rem);
 }
 
 /* 操作按钮 */
 .preferences-actions {
   display: flex;
-  gap: $spacing-16;
+  gap: $spacing-4;
   justify-content: center;
 }
 
 .action-button {
   display: flex;
   align-items: center;
-  gap: $spacing-8;
-  padding: $spacing-12 $spacing-24;
-  font-size: $font-size-5xl;
+  gap: $spacing-2;
+  padding: $spacing-3 $spacing-6;
+  font-size: $font-size-base;
   font-weight: $font-weight-medium;
-  border-radius: $border-radius-3xl;
+  border-radius: $border-radius-lg;
   cursor: pointer;
   transition: all $transition-base;
   border: none;
@@ -512,25 +502,25 @@ input:checked + .toggle-slider:before {
   color: $color-white;
   
   &:hover {
-    transform: translateY(-8px);
-    box-shadow: $shadow-3xl;
+    transform: translateY(-2px);
+    box-shadow: $shadow-md;
   }
 }
 
 .reset-button {
   background: $color-white;
   color: $color-primary;
-  border: 4px solid $color-primary;
+  border: 2px solid $color-primary;
   
   &:hover {
     background: $color-primary;
     color: $color-white;
-    transform: translateY(-8px);
-    box-shadow: $shadow-3xl;
+    transform: translateY(-2px);
+    box-shadow: $shadow-md;
   }
 }
 
 .button-icon {
-  font-size: $font-size-5xl;
+  font-size: $font-size-base;
 }
 </style>

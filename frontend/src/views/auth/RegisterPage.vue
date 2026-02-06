@@ -227,48 +227,48 @@ $sidebar-width: 16rem;             // 256px - 侧边栏宽度
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: $spacing-24;
-  transform: translateY(calc(-100% / 10));
+  padding: $spacing-6;
 }
 
 .auth-card {
   width: 100%;
-  max-width: 84rem;
+  max-width: 28rem;
   background: $color-white;
-  border-radius: $border-radius-4xl;
-  padding: $spacing-24;
-  box-shadow: $shadow-3xl;
-  border: 3px solid $color-gray-200;
+  border-radius: $border-radius-xl;
+  padding: $spacing-8;
+  box-shadow: $shadow-xl;
+  border: 1px solid $color-gray-200;
+  margin-bottom: $spacing-8;
 }
 
 .auth-header {
   text-align: center;
-  margin-bottom: $spacing-24;
+  margin-bottom: $spacing-8;
   
   .auth-title {
-    font-size: $font-size-7xl;
+    font-size: $font-size-2xl;
     font-weight: $font-weight-bold;
     color: $color-gray-900;
-    margin-bottom: $spacing-8;
+    margin-bottom: $spacing-2;
   }
   
   .auth-subtitle {
-    font-size: $font-size-5xl;
+    font-size: $font-size-sm;
     color: $color-gray-600;
   }
 }
 
 .auth-form {
   .form-group {
-    margin-bottom: $spacing-20;
+    margin-bottom: $spacing-6;
   }
 
   .form-label {
     display: block;
-    font-size: $font-size-5xl;
+    font-size: $font-size-sm;
     font-weight: $font-weight-medium;
     color: $color-gray-700;
-    margin-bottom: $spacing-8;
+    margin-bottom: $spacing-2;
   }
 
   .input-group {
@@ -279,47 +279,47 @@ $sidebar-width: 16rem;             // 256px - 侧边栏宽度
 
   .input-icon {
     position: absolute;
-    left: $spacing-16;
+    left: $spacing-4;
     color: $color-gray-400;
-    font-size: $font-size-5xl;
+    font-size: $font-size-base;
     pointer-events: none;
   }
 
   .form-input {
     width: 100%;
-    padding: $spacing-12 $spacing-16 $spacing-12 $spacing-16;
-    font-size: $font-size-5xl;
+    padding: $spacing-3 $spacing-24 $spacing-3 $spacing-5;
+    font-size: $font-size-base;
     color: $color-gray-900;
     background: $color-white;
-    border: 6px solid $color-gray-300;
-    border-radius: $border-radius-3xl;
+    border: 1px solid $color-gray-300;
+    border-radius: $border-radius-lg;
     transition: all $transition-base;
     
     &:focus {
       outline: none;
       border-color: $color-primary;
-      box-shadow: 0 0 0 12px rgba($color-primary, 0.1);
+      box-shadow: 0 0 0 3px rgba($color-primary, 0.1);
     }
     
     &::placeholder {
       color: $color-gray-400;
-      font-size: $font-size-5xl;
+      font-size: $font-size-sm;
     }
   }
 
   /* 密码强度指示器 */
   .password-strength {
-    margin-top: $spacing-8;
+    margin-top: $spacing-2;
     display: flex;
     align-items: center;
-    gap: $spacing-8;
+    gap: $spacing-2;
   }
 
   .strength-bar {
     flex: 1;
-    height: 16px;
+    height: 6px;
     background: $color-gray-300;
-    border-radius: 8px;
+    border-radius: 3px;
     overflow: hidden;
     position: relative;
     
@@ -332,13 +332,13 @@ $sidebar-width: 16rem;             // 256px - 侧边栏宽度
       height: 100%;
       width: 30%;
       background: $color-error;
-      border-radius: 8px;
+      border-radius: 3px;
       transition: all $transition-base;
     }
   }
 
   .strength-text {
-    font-size: $font-size-4xl;
+    font-size: $font-size-xs;
     color: $color-gray-600;
     font-weight: $font-weight-medium;
   }
@@ -352,7 +352,7 @@ $sidebar-width: 16rem;             // 256px - 侧边栏宽度
     color: $color-primary;
     text-decoration: none;
     font-weight: $font-weight-medium;
-    font-size: $font-size-5xl;
+    font-size: $font-size-sm;
     transition: color $transition-fast;
     
     &:hover {
@@ -363,19 +363,19 @@ $sidebar-width: 16rem;             // 256px - 侧边栏宽度
 
   .submit-button {
     width: 100%;
-    padding: $spacing-12 $spacing-24;
-    font-size: $font-size-5xl;
+    padding: $spacing-3 $spacing-6;
+    font-size: $font-size-base;
     font-weight: $font-weight-semibold;
     color: $color-white;
     background: linear-gradient(135deg, $color-primary 0%, $color-secondary 100%);
     border: none;
-    border-radius: $border-radius-3xl;
+    border-radius: $border-radius-lg;
     cursor: pointer;
     transition: all $transition-base;
     
     &:hover {
-      transform: translateY(-8px);
-      box-shadow: $shadow-3xl;
+      transform: translateY(-2px);
+      box-shadow: $shadow-md;
     }
     
     &:active {
@@ -386,19 +386,19 @@ $sidebar-width: 16rem;             // 256px - 侧边栏宽度
   .checkbox-label {
     display: flex;
     align-items: center;
-    gap: $spacing-8;
+    gap: $spacing-2;
     cursor: pointer;
     user-select: none;
   }
 
   .checkbox-input {
-    width: $spacing-16;
-    height: $spacing-16;
-    border: 4px solid $color-gray-300;
-    border-radius: $border-radius-base;
+    width: $spacing-4;
+    height: $spacing-4;
+    border: 1px solid $color-gray-300;
+    border-radius: $border-radius-sm;
     cursor: pointer;
     flex-shrink: 0;
-    margin-top: 8px;
+    margin-top: $spacing-1;
     
     &:checked {
       background-color: $color-primary;
@@ -407,21 +407,21 @@ $sidebar-width: 16rem;             // 256px - 侧边栏宽度
   }
 
   .checkbox-text {
-    font-size: $font-size-5xl;
+    font-size: $font-size-sm;
     color: $color-gray-700;
     line-height: 1.4;
   }
 }
 
 .auth-footer {
-  margin-top: $spacing-24;
-  padding-top: $spacing-20;
-  border-top: 3px solid $color-gray-200;
+  margin-top: $spacing-8;
+  padding-top: $spacing-6;
+  border-top: 1px solid $color-gray-200;
   text-align: center;
 }
 
 .footer-text {
-  font-size: $font-size-5xl;
+  font-size: $font-size-sm;
   color: $color-gray-600;
 }
 
@@ -429,8 +429,8 @@ $sidebar-width: 16rem;             // 256px - 侧边栏宽度
   color: $color-primary;
   font-weight: $font-weight-semibold;
   text-decoration: none;
-  margin-left: $spacing-4;
-  font-size: $font-size-5xl;
+  margin-left: $spacing-1;
+  font-size: $font-size-sm;
   transition: color $transition-fast;
   
   &:hover {
