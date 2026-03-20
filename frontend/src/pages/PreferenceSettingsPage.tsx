@@ -6,6 +6,7 @@ import { NotificationToggle } from '../components/NotificationToggle';
 import { useTheme, type ThemeMode } from '../hooks/useTheme';
 import { useLanguage } from '../hooks/useLanguage';
 import { toast } from 'sonner';
+import { applyUserPreferences, fetchCurrentUser, updateUserPreferences } from '../lib/api';
 
 export default function PreferenceSettingsPage() {
   const { themeMode, setThemeMode } = useTheme();
@@ -28,6 +29,40 @@ export default function PreferenceSettingsPage() {
   useEffect(() => {
     setThemeMode(selectedTheme);
   }, [selectedTheme, setThemeMode]);
+
+  useEffect(() => {
+    const hasAuth = !!(localStorage.getItem('authToken') || sessionStorage.getItem('authToken'));
+    if (!hasAuth) return;
+
+    fetchCurrentUser()
+      .then((user) => {
+        const nextTheme = (user.preferences?.theme as ThemeMode | undefined) || 'light';
+        const nextLanguage = user.preferences?.language || 'zh-CN';
+        setSelectedTheme(nextTheme);
+        setThemeMode(nextTheme);
+        setLanguage(nextLanguage);
+      })
+      .catch(() => {
+        // Ignore hydration failures and keep current UI state.
+      });
+  }, [setLanguage, setThemeMode]);
+
+  useEffect(() => {
+    const hasAuth = !!(localStorage.getItem('authToken') || sessionStorage.getItem('authToken'));
+    if (!hasAuth) return;
+
+    updateUserPreferences({
+      theme: selectedTheme,
+      language,
+      notifications: emailNotifications,
+    })
+      .then((preferences) => {
+        applyUserPreferences(preferences);
+      })
+      .catch(() => {
+        // Keep local state even if persistence fails.
+      });
+  }, [selectedTheme, language, emailNotifications]);
 
   useEffect(() => {
     localStorage.setItem('pref_email_notifications', String(emailNotifications));

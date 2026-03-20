@@ -7,6 +7,8 @@ const defaultData = {
   history: [],
 };
 
+let writeChain = Promise.resolve();
+
 async function ensureStorageFile() {
   const dir = path.dirname(config.storagePath);
   await fs.mkdir(dir, { recursive: true });
@@ -34,8 +36,14 @@ async function readStorage() {
 }
 
 async function writeStorage(data) {
-  await ensureStorageFile();
-  await fs.writeFile(config.storagePath, JSON.stringify(data, null, 2), "utf8");
+  writeChain = writeChain.then(async () => {
+    await ensureStorageFile();
+    const tempPath = `${config.storagePath}.tmp`;
+    await fs.writeFile(tempPath, JSON.stringify(data, null, 2), "utf8");
+    await fs.rename(tempPath, config.storagePath);
+  });
+
+  return writeChain;
 }
 
 module.exports = {

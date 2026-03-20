@@ -14,7 +14,7 @@ function sanitizeUser(user) {
     name: user.name,
     role: user.role,
     preferences: user.preferences || {
-      theme: "auto",
+      theme: "light",
       language: "zh-CN",
       notifications: true,
     },
@@ -55,7 +55,7 @@ async function register({ email, password, name }) {
     role: "user",
     passwordHash,
     preferences: {
-      theme: "auto",
+      theme: "light",
       language: "zh-CN",
       notifications: true,
     },
@@ -175,7 +175,7 @@ async function updatePreferences(userId, preferences = {}) {
   }
 
   const merged = {
-    theme: preferences.theme || user.preferences?.theme || "auto",
+    theme: preferences.theme || user.preferences?.theme || "light",
     language: preferences.language || user.preferences?.language || "zh-CN",
     notifications:
       typeof preferences.notifications === "boolean"
