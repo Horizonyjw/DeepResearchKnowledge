@@ -4,7 +4,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { toast } from 'sonner';
-import { searchPapers } from '../lib/api';
+import { fetchSearchHistory, searchPapers, type HistoryItem } from '../lib/api';
 
 interface SearchResult {
   id: string;
@@ -35,11 +35,19 @@ export default function SearchResultsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [jumpPageInput, setJumpPageInput] = useState('');
   const [selectedPapers, setSelectedPapers] = useState<Set<string>>(new Set());
+  const [historyItems, setHistoryItems] = useState<HistoryItem[]>([]);
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   const totalPages = Math.max(1, Math.ceil(totalResults / PAGE_SIZE));
 
   useEffect(() => {
     setQueryInput(query);
+  }, [query]);
+
+  useEffect(() => {
+    fetchSearchHistory()
+      .then((items) => setHistoryItems(items.slice(0, 8)))
+      .catch(() => setHistoryItems([]));
   }, [query]);
 
   useEffect(() => {
@@ -97,6 +105,11 @@ export default function SearchResultsPage() {
 
   const hasMoreBlocks = pageNumbers[pageNumbers.length - 1] < totalPages;
   const hasPrevBlocks = pageWindowStart > 1;
+  const filteredHistory = useMemo(() => {
+    const keyword = queryInput.trim().toLowerCase();
+    if (!keyword) return historyItems;
+    return historyItems.filter((item) => item.query.toLowerCase().includes(keyword));
+  }, [historyItems, queryInput]);
 
   const statsData = [
     { name: '期刊论文', value: 45 },
@@ -144,23 +157,54 @@ export default function SearchResultsPage() {
             </p>
           </div>
           <div className="w-full md:w-3/4">
-            <form onSubmit={handleSearchSubmit}>
-              <div className="flex shadow-md rounded-lg overflow-hidden">
-                <input
-                  type="text"
-                  value={queryInput}
-                  onChange={(e) => setQueryInput(e.target.value)}
-                  placeholder="输入关键词重新搜索"
-                  className="flex-1 px-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-                <button
-                  type="submit"
-                  className="px-6 py-3 bg-blue-600 text-white hover:bg-blue-700 transition-colors"
-                >
-                  搜索
-                </button>
-              </div>
-            </form>
+            <div className="relative">
+              <form onSubmit={handleSearchSubmit}>
+                <div className="flex shadow-md rounded-lg overflow-hidden">
+                  <input
+                    type="text"
+                    value={queryInput}
+                    onChange={(e) => setQueryInput(e.target.value)}
+                    onFocus={() => setHistoryOpen(true)}
+                    onBlur={() => {
+                      window.setTimeout(() => setHistoryOpen(false), 120);
+                    }}
+                    placeholder="输入关键词重新搜索"
+                    className="flex-1 px-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                  <button
+                    type="submit"
+                    className="px-6 py-3 bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+                  >
+                    搜索
+                  </button>
+                </div>
+              </form>
+
+              {historyOpen && filteredHistory.length > 0 ? (
+                <div className="absolute left-0 right-0 top-full mt-2 z-30 rounded-lg border border-gray-200 bg-white shadow-lg">
+                  <div className="px-4 py-3 border-b border-gray-100 text-sm font-medium text-gray-700">
+                    搜索历史
+                  </div>
+                  <div className="py-2">
+                    {filteredHistory.map((item) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          setQueryInput(item.query);
+                          setHistoryOpen(false);
+                          navigate(`/search?query=${encodeURIComponent(item.query)}`);
+                        }}
+                        className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                      >
+                        {item.query}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+            </div>
           </div>
         </div>
 

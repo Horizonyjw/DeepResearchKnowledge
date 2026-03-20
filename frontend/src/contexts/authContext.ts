@@ -5,6 +5,11 @@ type AuthUser = {
   email?: string;
   name?: string;
   role?: string;
+  preferences?: {
+    theme?: 'light' | 'dark' | 'auto';
+    language?: string;
+    notifications?: boolean;
+  };
 };
 
 export const AuthContext = createContext({

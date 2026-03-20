@@ -17,7 +17,7 @@ router.post("/generate", tryAuth, async (req, res, next) => {
     const allowed = new Set(["summary", "detailed", "comparative"]);
     const safeReportType = allowed.has(reportType) ? reportType : "summary";
 
-    const reportContent = buildReport({
+    const reportContent = await buildReport({
       query: query.trim(),
       papers: Array.isArray(papers) ? papers : [],
       reportType: safeReportType,

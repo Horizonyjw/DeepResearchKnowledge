@@ -46,7 +46,10 @@ function normalizeLanguage(value: string | null): AppLanguage {
 }
 
 export function useLanguage() {
-  const [language, setLanguageState] = useState<AppLanguage>(() => normalizeLanguage(localStorage.getItem('language')));
+  const [language, setLanguageState] = useState<AppLanguage>(() => {
+    const hasAuth = !!(localStorage.getItem('authToken') || sessionStorage.getItem('authToken'));
+    return hasAuth ? normalizeLanguage(localStorage.getItem('language')) : 'zh-CN';
+  });
 
   useEffect(() => {
     localStorage.setItem('language', language);
@@ -68,6 +71,20 @@ export function useLanguage() {
     };
     window.addEventListener('app-language-changed', handler as EventListener);
     return () => window.removeEventListener('app-language-changed', handler as EventListener);
+  }, []);
+
+  useEffect(() => {
+    const onStorage = () => {
+      const hasAuth = !!(localStorage.getItem('authToken') || sessionStorage.getItem('authToken'));
+      if (!hasAuth) {
+        setLanguageState('zh-CN');
+        return;
+      }
+      setLanguageState(normalizeLanguage(localStorage.getItem('language')));
+    };
+
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
   }, []);
 
   const t = useMemo(() => DICT[language], [language]);
