@@ -1,5 +1,6 @@
 """演示如何上传多个 PDF 并结合内容进行对话。支持配置为路径或 file_id 列表，批量处理。"""
 
+import os
 import re
 from pathlib import Path
 
@@ -14,10 +15,7 @@ from config import (
     pdf_input_files_key,
     pdf_upload_url,
 )
-from test import stream_post_request, init_output_file
-
-# 如果为True，只会生成test.md，为False的话会生成带日期的.md
-if_test = False
+from sse_client import stream_post_request
 
 # 简单判断是否为 UUID 格式的 file_id（避免把路径当 id 用）
 UUID_PATTERN = re.compile(
@@ -82,16 +80,25 @@ def build_chat_payload(upload_ids: list[str], query: str) -> dict:
     }
 
 
-def main():
+if __name__ == "__main__":
     if not pdf_file_list:
         raise ValueError("PDF_FILE_LIST 不能为空，请至少配置一个路径或 file_id")
     upload_ids = resolve_file_ids(pdf_file_list)
     print(f"将使用 {len(upload_ids)} 个文件进行对话: {upload_ids}")
     data = build_chat_payload(upload_ids, pdf_default_query)
     headers = {"Authorization": f"Bearer {pdf_api_key}", "Content-Type": "application/json"}
-    file = init_output_file(if_test,"PDF_report")
-    stream_post_request(pdf_chat_url, headers, data, output_file=file)
-    file.close()  
 
-if __name__ == "__main__":
-    main()
+    # 统一把摘要写入项目根目录下的 pdf_database/pdf_data.json 中
+    db_dir = Path(os.path.abspath(os.curdir)) / "pdf_database"
+    db_path = db_dir / "pdf_data.json"
+
+    # 不再为每次运行生成单独的 PDF_report_xxx.json 文件，
+    # 而是在 workflow_finished 时把所有摘要写入/追加到 pdf_data.json 中
+    stream_post_request(
+        pdf_chat_url,
+        headers,
+        data,
+        output_file=None,
+        output_format="json",
+        json_path=str(db_path),
+    )

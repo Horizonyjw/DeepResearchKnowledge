@@ -1,56 +1,77 @@
-﻿import React, { useContext, useState } from 'react';
-import { Navbar } from '../components/Navbar';
-import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { toast } from 'sonner';
-import { AuthContext } from '../contexts/authContext';
-import { login } from '../lib/api';
+import React, { useContext, useMemo, useState } from "react";
+import { Navbar } from "../components/Navbar";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { motion } from "framer-motion";
+import { AuthContext } from "../contexts/authContext";
+import { applyUserPreferences, login, persistAuth, register } from "../lib/api";
+
+type Mode = "login" | "register";
+type MessageState = {
+  type: "success" | "error";
+  text: string;
+} | null;
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirectTarget = useMemo(() => searchParams.get("redirect") || "/", [searchParams]);
   const { setIsAuthenticated, setUser } = useContext(AuthContext);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [mode, setMode] = useState<Mode>("login");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState<MessageState>(null);
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!email || !password) {
-      toast.error('请填写邮箱和密码');
-      return;
+  const validate = () => {
+    if (!email || !password || (mode === "register" && !name.trim())) {
+      return "请完整填写表单";
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      toast.error('请输入有效的邮箱地址');
+      return "请输入有效的邮箱地址";
+    }
+
+    if (password.length < 6) {
+      return "密码至少需要 6 位";
+    }
+
+    return "";
+  };
+
+  const handleAuth = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setMessage(null);
+
+    const validationError = validate();
+    if (validationError) {
+      setMessage({ type: "error", text: validationError });
       return;
     }
 
     setLoading(true);
 
     try {
-      const response = await login({ email, password, rememberMe });
-
-      if (response?.token) {
-        if (rememberMe) {
-          localStorage.setItem('authToken', response.token);
-          localStorage.setItem('authUser', JSON.stringify(response.user || {}));
-        } else {
-          sessionStorage.setItem('authToken', response.token);
-          sessionStorage.setItem('authUser', JSON.stringify(response.user || {}));
-        }
+      if (mode === "register") {
+        await register({ name: name.trim(), email, password, rememberMe });
+        setMode("login");
+        setPassword("");
+        setMessage({ type: "success", text: "注册成功，请使用刚创建的账号登录" });
+        return;
       }
 
+      const response = await login({ email, password, rememberMe });
+      persistAuth(response, rememberMe);
       setIsAuthenticated(true);
       setUser(response.user || null);
-
-      toast.success('登录成功');
-      navigate('/');
+      applyUserPreferences(response.user?.preferences);
+      setMessage({ type: "success", text: "登录成功，正在跳转..." });
+      window.setTimeout(() => navigate(redirectTarget), 300);
     } catch (err: any) {
-      toast.error(err?.message || '登录失败，请稍后重试');
+      setMessage({ type: "error", text: err?.message || "操作失败，请稍后重试" });
     } finally {
       setLoading(false);
     }
@@ -68,12 +89,58 @@ export default function LoginPage() {
           transition={{ duration: 0.5 }}
         >
           <div className="p-6">
-            <div className="text-center mb-6">
-              <h2 className="text-xl font-semibold text-gray-900">欢迎回来</h2>
-              <p className="text-gray-600 mt-1">请登录您的账号</p>
+            <div className="flex rounded-md bg-gray-100 p-1 mb-6">
+              <button
+                type="button"
+                onClick={() => {
+                  setMode("login");
+                  setMessage(null);
+                }}
+                className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+                  mode === "login" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"
+                }`}
+              >
+                登录
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setMode("register");
+                  setMessage(null);
+                }}
+                className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+                  mode === "register" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"
+                }`}
+              >
+                注册
+              </button>
             </div>
 
-            <form onSubmit={handleLogin}>
+            <div className="text-center mb-6">
+              <h2 className="text-xl font-semibold text-gray-900">{mode === "login" ? "欢迎回来" : "创建账号"}</h2>
+              <p className="text-gray-600 mt-1">
+                {mode === "login" ? "请登录您的账号" : "注册后即可保存您的个性化设置"}
+              </p>
+            </div>
+
+            <form onSubmit={handleAuth}>
+              {mode === "register" ? (
+                <div className="mb-4">
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                    用户名
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="请输入用户名"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700"
+                    autoComplete="name"
+                  />
+                </div>
+              ) : null}
+
               <div className="mb-4">
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                   邮箱地址
@@ -89,7 +156,7 @@ export default function LoginPage() {
                 />
               </div>
 
-              <div className="mb-4">
+              <div className="mb-2">
                 <div className="flex justify-between items-center mb-1">
                   <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                     密码
@@ -99,18 +166,26 @@ export default function LoginPage() {
                     className="text-sm text-blue-600 hover:text-blue-800 focus:outline-none"
                     onClick={() => setShowPassword(!showPassword)}
                   >
-                    {showPassword ? '隐藏' : '查看'}
+                    {showPassword ? "隐藏" : "查看"}
                   </button>
                 </div>
                 <input
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   id="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="请输入密码"
                   className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700"
-                  autoComplete="current-password"
+                  autoComplete={mode === "login" ? "current-password" : "new-password"}
                 />
+              </div>
+
+              <div className="min-h-8 mb-4">
+                {message ? (
+                  <p className={`text-sm ${message.type === "success" ? "text-green-600" : "text-red-600"}`}>
+                    {message.text}
+                  </p>
+                ) : null}
               </div>
 
               <div className="flex items-center mb-6">
@@ -131,7 +206,7 @@ export default function LoginPage() {
                 disabled={loading}
                 className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-60"
               >
-                {loading ? '登录中...' : '登录'}
+                {loading ? (mode === "login" ? "登录中..." : "注册中...") : mode === "login" ? "登录" : "注册"}
               </button>
             </form>
           </div>

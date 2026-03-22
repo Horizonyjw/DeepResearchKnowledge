@@ -9,8 +9,9 @@ function detectSystemTheme(): ResolvedTheme {
 
 export function useTheme() {
   const [themeMode, setThemeMode] = useState<ThemeMode>(() => {
+    const hasAuth = !!(localStorage.getItem('authToken') || sessionStorage.getItem('authToken'));
     const saved = localStorage.getItem('themeMode') as ThemeMode | null;
-    return saved || 'auto';
+    return hasAuth ? (saved || 'light') : 'light';
   });
 
   const [systemTheme, setSystemTheme] = useState<ResolvedTheme>(() => detectSystemTheme());
@@ -33,6 +34,23 @@ export function useTheme() {
     document.documentElement.classList.add(resolvedTheme === 'dark' ? 'theme-dark' : 'theme-light');
     document.documentElement.setAttribute('data-theme', resolvedTheme);
   }, [themeMode, resolvedTheme]);
+
+  useEffect(() => {
+    const onStorage = () => {
+      const hasAuth = !!(localStorage.getItem('authToken') || sessionStorage.getItem('authToken'));
+      if (!hasAuth) {
+        setThemeMode('light');
+        return;
+      }
+      const saved = localStorage.getItem('themeMode') as ThemeMode | null;
+      if (saved) {
+        setThemeMode(saved);
+      }
+    };
+
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
 
   const toggleTheme = () => {
     setThemeMode((prev) => {
