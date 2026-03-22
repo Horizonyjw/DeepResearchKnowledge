@@ -6,10 +6,11 @@ import asyncio
 import aiohttp
 from datetime import datetime
 from pathlib import Path
-from typing import List, Dict
+from typing import List, Dict, Tuple
 from tqdm import tqdm
 from openai import OpenAI
 from dotenv import load_dotenv
+from paperscraper.arxiv import get_and_dump_arxiv_papers
 
 
 class TopicCrawler:
@@ -23,26 +24,22 @@ class TopicCrawler:
         self.save_dir = Path(save_dir)
         self.max_results = max_results
         self.cache_file = self.save_dir / "cache.pkl"
-        self.citation_cache_file = self.save_dir / "citations.pkl"
-        self.temp_search_file = self.save_dir / "search_results.jsonl"
 
         # 创建目录结构
-        self.papers_dir = self.save_dir / "papers"
         self.pdfs_dir = self.save_dir / "pdfs"
         self.metadata_dir = self.save_dir / "metadata"
 
-        for dir_path in [self.papers_dir, self.pdfs_dir, self.metadata_dir]:
+        for dir_path in [self.pdfs_dir, self.metadata_dir]:
             dir_path.mkdir(parents=True, exist_ok=True)
 
         # 加载缓存
         self.cached_papers = self.load_cache()
-        self.citation_cache = self.load_citation_cache()
 
         # 异步配置
         self.semaphore_limit = 20
         self.batch_size = 500
 
-    # LLM查询转换 - 静态方法（保持不变）
+    # LLM查询转换 - 静态方法
     @staticmethod
     def get_query(user_input: str) -> str:
         """使用智谱GLM-4 API将中文查询转换为paperscraper可用的搜索关键词
@@ -102,23 +99,7 @@ class TopicCrawler:
             )
             ai_reply = response.choices[0].message.content.strip()
 
-            # 清理前缀：移除 cat:、all: 等前缀，只保留核心关键词
-            # 因为 paperscraper 会自动添加 all: 前缀
-            cleaned_reply = ai_reply
-            # 循环清理所有可能的前缀，直到没有前缀为止
-            while True:
-                found_prefix = False
-                for prefix in ['cat:', 'all:', 'ti:', 'au:', 'abs:', 'jr:']:
-                    if cleaned_reply.lower().startswith(prefix):
-                        cleaned_reply = cleaned_reply[len(prefix):].strip()
-                        found_prefix = True
-                        break
-                if not found_prefix:
-                    break
-
-            print(f"LLM生成的查询: {ai_reply}")
-            print(f"清理后的查询: {cleaned_reply}")
-            return cleaned_reply
+            return ai_reply
         except Exception as e:
             print(f"LLM API调用失败: {e}")
             return user_input
@@ -133,25 +114,10 @@ class TopicCrawler:
                 return {}
         return {}
 
-    def load_citation_cache(self) -> Dict:
-        """加载引用数缓存"""
-        if self.citation_cache_file.exists():
-            try:
-                with open(self.citation_cache_file, 'rb') as f:
-                    return pickle.load(f)
-            except:
-                return {}
-        return {}
-
     def save_cache(self):
         """保存缓存数据"""
         with open(self.cache_file, 'wb') as f:
             pickle.dump(self.cached_papers, f)
-
-    def save_citation_cache(self):
-        """保存引用数缓存"""
-        with open(self.citation_cache_file, 'wb') as f:
-            pickle.dump(self.citation_cache, f)
 
     def parse_date(self, date_str: str) -> datetime:
         """解析日期字符串"""
@@ -163,7 +129,7 @@ class TopicCrawler:
             except:
                 return datetime.now()
 
-    def search_papers(self, max_search: int = 10000) -> List[Dict]:
+    def search_papers(self, max_search: int = 10000):
         """搜索论文 - 使用paperscraper库"""
         # 使用LLM转换关键词
         search_keyword = self.get_query(self.keyword)
@@ -177,27 +143,26 @@ class TopicCrawler:
         print("\n 正在获取论文信息...")
         start_time = time.time()
 
-        # 确保保存目录存在（使用os.makedirs确保所有父目录都被创建）
+        # 确保保存目录存在
         os.makedirs(self.save_dir, exist_ok=True)
 
+        # 构建查询,只需要传入纯关键词
+        keywords = [search_keyword]
+
+        # 创建临时文件用于存储搜索结果
+        temp_file = self.save_dir / "_temp_search.jsonl"
+
         try:
-            # 导入paperscraper
-            from paperscraper.arxiv import get_and_dump_arxiv_papers
-
-            # 构建查询 - paperscraper会自动添加 all: 前缀
-            # 只需要传入纯关键词
-            keywords = [search_keyword]
-
             # 搜索论文并保存到临时文件
             get_and_dump_arxiv_papers(
                 keywords=keywords,
-                output_filepath=str(self.temp_search_file),
+                output_filepath=str(temp_file),
                 max_results=max_search
             )
 
             # 读取搜索结果
-            if self.temp_search_file.exists():
-                with open(self.temp_search_file, 'r', encoding='utf-8') as f:
+            if temp_file.exists():
+                with open(temp_file, 'r', encoding='utf-8') as f:
                     for line in f:
                         try:
                             paper_data = json.loads(line.strip())
@@ -209,16 +174,12 @@ class TopicCrawler:
                             else:
                                 paper_info = {
                                     'id': paper_id,
+                                    'doi': paper_data.get('doi', ''),
                                     'title': paper_data.get('title', ''),
-                                    'authors': paper_data.get('authors', []),
                                     'abstract': paper_data.get('abstract', ''),
                                     'published': self.parse_date(paper_data.get('date', '')),
-                                    'updated': self.parse_date(paper_data.get('date', '')),
                                     'pdf_url': paper_data.get('pdf', ''),
                                     'entry_url': paper_data.get('link', ''),
-                                    'categories': paper_data.get('categories', []),
-                                    'primary_category': paper_data.get('categories', [''])[0] if paper_data.get('categories') else '',
-                                    'doi': paper_data.get('doi', ''),
                                 }
 
                                 papers.append(paper_info)
@@ -227,13 +188,18 @@ class TopicCrawler:
                         except json.JSONDecodeError:
                             continue
 
-        except ImportError:
-            print(" 错误: paperscraper库未安装，请运行: pip install paperscraper")
-            raise ImportError("paperscraper库未安装")
-
+                # 读取完成后立即删除临时文件
+                try:
+                    temp_file.unlink()
+                except:
+                    pass
         except Exception as e:
-            print(f" paperscraper搜索失败: {e}")
-            raise
+            print(f" 搜索过程出错: {e}")
+            if temp_file.exists():
+                try:
+                    temp_file.unlink()
+                except:
+                    pass
 
         elapsed = time.time() - start_time
         print(f" 成功获取 {len(papers)} 篇论文 (耗时: {elapsed:.1f}秒)")
@@ -241,102 +207,151 @@ class TopicCrawler:
         return papers
 
     async def fetch_citations_batch(self, paper_titles: List[str], paper_ids: List[str] = None) -> Dict[str, int]:
-        """批量获取引用数 - 使用OpenAlex API（替代Semantic Scholar）"""
-        # 先检查缓存
-        uncached_titles = [title for title in paper_titles if title not in self.citation_cache]
-        cached_results = {title: self.citation_cache[title] for title in paper_titles if title in self.citation_cache}
-
-        if not uncached_titles:
-            print(f" 引用数: 全部从缓存获取 ({len(cached_results)} 条)")
-            return cached_results
-
-        print(f" 引用数: 缓存命中 {len(cached_results)}, 需API查询 {len(uncached_titles)}")
+        """批量获取引用数 - 支持重试和国内镜像"""
+        import requests
+        import concurrent.futures
 
         results = {}
         success_count = 0
         fail_count = 0
 
-        max_concurrent = 30
-        connector = aiohttp.TCPConnector(limit=max_concurrent)
-        timeout = aiohttp.ClientTimeout(total=60, connect=15)
-
-        async def fetch_by_arxiv_id(session, paper_id, semaphore):
-            """通过arXiv ID查询OpenAlex"""
+        def fetch_with_retry(paper_id, title, max_retries=3):
+            """带多重备用API的重试 - 优化版"""
             nonlocal success_count, fail_count
-            async with semaphore:
+
+            # 尝试次数 - 减少主API重试，依赖备用API
+            for attempt in range(max_retries):
                 try:
-                    # OpenAlex使用arXiv ID查询
-                    url = f"https://api.openalex.org/works/https://arxiv.org/abs/{paper_id}"
-                    headers = {"Accept": "application/json"}
+                    # 方法1: Semantic Scholar API (最快)
+                    url = f"https://api.semanticscholar.org/graph/v1/paper/arXiv:{paper_id}"
+                    params = {"fields": "citationCount"}
 
-                    async with session.get(url, headers=headers) as response:
-                        if response.status == 200:
-                            data = await response.json()
-                            citation = data.get('cited_by_count', 0) or 0
-                            success_count += 1
-                            return paper_id, citation
-                        else:
-                            fail_count += 1
-                            return paper_id, 0
-                except:
-                    fail_count += 1
-                    return paper_id, 0
+                    response = requests.get(
+                        url,
+                        params=params,
+                        timeout=6
+                    )
 
-        async def fetch_by_title(session, title, semaphore):
-            """通过标题搜索OpenAlex（备用方案）"""
-            nonlocal success_count, fail_count
-            async with semaphore:
-                try:
-                    # 使用title.search过滤
-                    url = f"https://api.openalex.org/works?filter=title.search:{title}&per_page=1"
-                    headers = {"Accept": "application/json"}
-
-                    async with session.get(url, headers=headers) as response:
-                        if response.status == 200:
-                            data = await response.json()
-                            if data.get('results') and len(data['results']) > 0:
-                                paper = data['results'][0]
-                                citation = paper.get('cited_by_count', 0) or 0
-                                success_count += 1
-                                return title, citation
-                            else:
-                                fail_count += 1
-                                return title, 0
-                        else:
-                            fail_count += 1
-                            return title, 0
-                except:
-                    fail_count += 1
-                    return title, 0
-
-        semaphore = asyncio.Semaphore(max_concurrent)
-
-        async with aiohttp.ClientSession(connector=connector, timeout=timeout) as session:
-            tasks = []
-            # 优先使用arXiv ID查询
-            if paper_ids:
-                for title, paper_id in zip(uncached_titles, paper_ids):
-                    if paper_id:
-                        tasks.append(fetch_by_arxiv_id(session, paper_id, semaphore))
+                    if response.status_code == 200:
+                        data = response.json()
+                        citation = data.get('citationCount', 0) or 0
+                        success_count += 1
+                        return paper_id, citation
+                    elif response.status_code == 404:
+                        break
                     else:
-                        tasks.append(fetch_by_title(session, title, semaphore))
-            else:
-                for title in uncached_titles:
-                    tasks.append(fetch_by_title(session, title, semaphore))
+                        if attempt < max_retries - 1:
+                            time.sleep(0.3)
+                            continue
+                except Exception as e:
+                    if attempt < max_retries - 1:
+                        time.sleep(0.3)
+                        continue
 
-            with tqdm(total=len(uncached_titles), desc="获取引用数") as pbar:
-                for coro in asyncio.as_completed(tasks):
-                    try:
-                        key, count = await coro
-                        results[key] = count
-                        self.citation_cache[key] = count
-                    except:
-                        pass
-                    pbar.update(1)
+            # 备用方案1: Semantic Scholar 标题搜索
+            try:
+                url = "https://api.semanticscholar.org/graph/v1/paper/search"
+                params = {"query": title[:80], "fields": "citationCount", "limit": 1}
+
+                response = requests.get(
+                    url,
+                    params=params,
+                    timeout=6
+                )
+
+                if response.status_code == 200:
+                    data = response.json()
+                    if data.get('data') and len(data['data']) > 0:
+                        paper = data['data'][0]
+                        citation = paper.get('citationCount', 0) or 0
+                        success_count += 1
+                        return paper_id, citation
+            except:
+                pass
+
+            # 备用方案2: CrossRef API
+            try:
+                url = f"https://api.crossref.org/works?query=arXiv:{paper_id}&rows=1"
+                response = requests.get(
+                    url,
+                    timeout=6
+                )
+
+                if response.status_code == 200:
+                    data = response.json()
+                    if data.get('message', {}).get('items'):
+                        item = data['message']['items'][0]
+                        citation = item.get('is-referenced-by-count', 0) or 0
+                        success_count += 1
+                        return paper_id, citation
+            except:
+                pass
+
+            # 备用方案3: OpenAlex API
+            try:
+                url = f"https://api.openalex.org/works?filter=arxiv:{paper_id}&per_page=1"
+                response = requests.get(
+                    url,
+                    timeout=6
+                )
+
+                if response.status_code == 200:
+                    data = response.json()
+                    if data.get('results') and len(data['results']) > 0:
+                        paper = data['results'][0]
+                        citation = paper.get('cited_by_count', 0) or 0
+                        success_count += 1
+                        return paper_id, citation
+            except:
+                pass
+
+            fail_count += 1
+            return paper_id, 0
+
+        # 使用线程池并发 - 带进度条
+        print(" 正在获取引用数...")
+
+        items_to_fetch = []
+        for title, paper_id in zip(paper_titles, paper_ids or [None] * len(paper_titles)):
+            if paper_id:
+                items_to_fetch.append((paper_id, title))
+
+        if items_to_fetch:
+            # 并发数
+            with concurrent.futures.ThreadPoolExecutor(max_workers=30) as executor:
+                # 先提交所有任务
+                futures = {executor.submit(fetch_with_retry, pid, title): pid for pid, title in items_to_fetch}
+
+                # 使用tqdm显示进度
+                with tqdm(total=len(items_to_fetch), desc="获取引用数") as pbar:
+                    for future in concurrent.futures.as_completed(futures):
+                        try:
+                            key, count = future.result(timeout=12)
+                            results[key] = count
+                        except concurrent.futures.TimeoutError:
+                            # 超时的任务算失败
+                            pid = futures[future]
+                            results[pid] = 0
+                        except Exception:
+                            pass
+                        pbar.update(1)
 
         print(f" 引用数获取完成: 成功 {success_count}, 失败 {fail_count}")
-        final_results = {**cached_results, **results}
-        return final_results
+
+        # 提示网络状态
+        if success_count == 0 and fail_count > 0:
+            print("\n" + "=" * 60)
+            print(" 引用数获取全部失败！")
+            print(" 可能原因：")
+            print(" 1. 国内网络无法访问 Semantic Scholar API")
+            print(" 2. 代理配置未生效")
+            print(" 解决方案：")
+            print(" - 请设置 HTTP_PROXY/HTTPS_PROXY 环境变量")
+            print(" - 或使用VPN/代理软件")
+            print(" - 当前将按发布时间排序论文")
+            print("=" * 60 + "\n")
+
+        return results
 
     def calculate_score(self, paper: Dict, citation_weight: float = 0.7) -> float:
         """计算论文综合分数"""
@@ -384,78 +399,59 @@ class TopicCrawler:
         ranked_papers = sorted(papers, key=lambda x: x['score'], reverse=True)
 
         print(f" 排序完成，已选出Top {self.max_results}篇论文")
-        self.save_citation_cache()
         return ranked_papers[:self.max_results]
 
     def rank_papers(self, papers: List[Dict], citation_weight: float = 0.7) -> List[Dict]:
         """排序论文 - 同步入口"""
         return asyncio.run(self.rank_papers_async(papers, citation_weight))
 
-    async def download_pdf_async(self, session, paper, semaphore):
-        """异步下载单篇论文PDF - 使用同步requests + 代理支持"""
+    def download_single_pdf(self, paper_id: str) -> Tuple[bool, str]:
+        """下载单篇论文PDF - 使用同步requests"""
         import requests
-        import os
 
-        paper_id = paper.get('id', '')
         pdf_path = self.pdfs_dir / f"{paper_id}.pdf"
 
         if pdf_path.exists():
-            return True
-
-        # 获取代理设置
-        proxies = {}
-        http_proxy = os.environ.get('HTTP_PROXY') or os.environ.get('http_proxy')
-        https_proxy = os.environ.get('HTTPS_PROXY') or os.environ.get('https_proxy')
-
-        if http_proxy:
-            proxies['http'] = http_proxy
-        if https_proxy:
-            proxies['https'] = https_proxy
+            return True, paper_id
 
         # 备用URL列表 - 优先使用国内镜像
         pdf_urls = [
-            # 优先 ar5iv 国内镜像
+            # 优先 ar5iv 国内镜像（最快）
             f"https://ar5iv.org/pdf/{paper_id}.pdf",
-            # 然后其他镜像
+            # 其他镜像
             f"https://arxiv.org/pdf/{paper_id}.pdf",
-            # 尝试使用 jina AI 代理
+            # Jina AI 代理
             f"https://r.jina.ai/http://arxiv.org/pdf/{paper_id}.pdf",
         ]
 
-        async with semaphore:
-            for url in pdf_urls:
-                try:
-                    # 使用同步requests，更稳定
-                    response = requests.get(
-                        url,
-                        timeout=60,
-                        allow_redirects=True,
-                        proxies=proxies if proxies else None,
-                        headers={'User-Agent': 'Mozilla/5.0'}
-                    )
+        for url in pdf_urls:
+            try:
+                response = requests.get(url, timeout=60, headers={'User-Agent': 'Mozilla/5.0'})
 
-                    if response.status_code == 200:
-                        content = response.content
-                        # 检查是否为PDF
-                        if len(content) > 1000 and content[:4] == b'%PDF':
-                            with open(pdf_path, 'wb') as f:
-                                f.write(content)
-                            if pdf_path.exists() and pdf_path.stat().st_size > 1000:
-                                return True
-                    elif response.status_code == 404:
-                        continue
-                    elif response.status_code == 429:
-                        await asyncio.sleep(3)
-                        continue
-                except Exception as e:
-                    if 'proxy' in str(e).lower():
-                        continue
+                if response.status_code == 200:
+                    content = response.content
+                    # 检查是否为PDF
+                    if len(content) > 1000 and content[:4] == b'%PDF':
+                        with open(pdf_path, 'wb') as f:
+                            f.write(content)
+                        if pdf_path.exists() and pdf_path.stat().st_size > 1000:
+                            return True, paper_id
+                elif response.status_code == 404:
                     continue
+                elif response.status_code == 429:
+                    time.sleep(3)
+                    continue
+            except requests.exceptions.Timeout:
+                continue
+            except requests.exceptions.RequestException:
+                continue
 
-            return False
+        return False, paper_id
 
-    async def download_papers_async(self, papers: List[Dict], max_workers: int = 10):
-        """异步批量下载论文"""
+    def download_papers(self, papers: List[Dict], max_workers: int = 20):
+        """批量下载论文 - 使用线程池并发"""
+        import concurrent.futures
+
         print(f"\n 开始下载 {len(papers)} 篇论文...")
 
         # 统计已下载的论文
@@ -463,66 +459,62 @@ class TopicCrawler:
         for paper in papers:
             pdf_path = self.pdfs_dir / f"{paper.get('id', '')}.pdf"
             if not pdf_path.exists():
-                papers_to_download.append(paper)
+                papers_to_download.append(paper.get('id', ''))
 
         print(f" 需下载: {len(papers_to_download)} 篇")
+        print(f" 并发数: {max_workers}")
 
         if not papers_to_download:
             print(" 所有论文已存在，跳过下载")
             return
 
-        # 降低并发数，避免被限流
-        semaphore = asyncio.Semaphore(max_workers)
-        connector = aiohttp.TCPConnector(limit=max_workers, ttl_dns_cache=300)
-        timeout = aiohttp.ClientTimeout(total=60)
-
         success_count = 0
         failed_papers = []
-        error_count = 0  # 限制错误日志数量
 
-        async with aiohttp.ClientSession(connector=connector, timeout=timeout) as session:
-            tasks = [self.download_pdf_async(session, paper, semaphore) for paper in papers_to_download]
+        # 使用线程池并发下载
+        with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+            # 提交所有任务
+            future_to_paper = {executor.submit(self.download_single_pdf, paper_id): paper_id
+                               for paper_id in papers_to_download}
 
+            # 使用tqdm显示进度
             with tqdm(total=len(papers_to_download), desc="下载PDF") as pbar:
-                for i, coro in enumerate(asyncio.as_completed(tasks)):
+                for future in concurrent.futures.as_completed(future_to_paper):
+                    paper_id = future_to_paper[future]
                     try:
-                        result = await coro
-                        if result:
+                        success, pid = future.result()
+                        if success:
                             success_count += 1
                         else:
-                            failed_papers.append(papers_to_download[i].get('id', 'unknown'))
-                    except Exception as e:
-                        failed_papers.append(papers_to_download[i].get('id', 'unknown'))
+                            failed_papers.append(pid)
+                    except Exception:
+                        failed_papers.append(paper_id)
                     pbar.update(1)
 
         # 输出失败论文列表
         if failed_papers:
             print(f"\n 下载失败论文数: {len(failed_papers)}")
-            # 只显示前5个
             print(f" 失败论文ID: {', '.join(failed_papers[:5])}")
 
         print(f" 成功下载 {success_count}/{len(papers_to_download)} 篇论文")
-
-    def download_papers(self, papers: List[Dict], max_workers: int = 20):
-        """下载论文 - 同步入口"""
-        asyncio.run(self.download_papers_async(papers, max_workers))
 
     def save_metadata(self, papers: List[Dict]):
         """保存论文元数据（只保留JSON格式）"""
         print("\n 正在保存元数据...")
 
-        # 只保存为JSON
+        # 直接保存为JSON数组
         json_path = self.metadata_dir / "papers_metadata.json"
         with open(json_path, 'w', encoding='utf-8') as f:
             json.dump(papers, f, ensure_ascii=False, indent=2, default=str)
 
         print(f" 元数据已保存至: {json_path}")
+        print(f" 论文数量: {len(papers)}")
 
     # 主入口
     def main(self,
-              initial_search: int = 1000,
-              citation_weight: float = 0.7,
-              download_pdf: bool = True):
+             initial_search: int = 1000,
+             citation_weight: float = 0.7,
+             download_pdf: bool = True):
         """运行爬虫主流程
 
         参数:

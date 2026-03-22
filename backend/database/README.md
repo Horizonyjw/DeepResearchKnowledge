@@ -41,14 +41,12 @@
             citation_weight=0.7,    # 引用数在排序中的权重（0-1）
             download_pdf=True     # 是否下载 PDF（网络问题建议关闭）
         )
-输出示例：   arxiv_papers/
-            ├── cache.pkl              # 论文元数据缓存
-            ├── citations.pkl          # 引用数缓存
-            ├── search_results.jsonl   # paperscraper 原始搜索结果
-            ├── metadata/
-            │   └── papers_metadata.json   # 最终排序后的论文元数据（JSON）
-            └── pdfs/                  # 下载的 PDF 文件（如启用下载）
-                └── {paper_id}.pdf
+输出示例：  topic_papers/                      # 保存目录（由 save_dir 参数指定，默认 "./topic_papers"）
+                ├── cache.pkl                      # 论文元数据缓存（pickle格式），避免重复获取
+                ├── metadata/                      # 元数据存储目录
+                │   └── papers_metadata.json       # 最终排序后的论文元数据（JSON数组，包含 id, title, abstract, citation_count, score 等字段）
+                └── pdfs/                          # PDF 文件存储目录
+                    └── {paper_id}.pdf             # 以 arXiv ID 命名的 PDF 文件（例如 2301.12345.pdf）
 
 
 3.环境变量
