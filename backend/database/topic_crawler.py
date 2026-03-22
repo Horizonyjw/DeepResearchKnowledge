@@ -3,7 +3,6 @@ import time
 import os
 import pickle
 import asyncio
-import aiohttp
 from datetime import datetime
 from pathlib import Path
 from typing import List, Dict, Tuple
@@ -178,8 +177,8 @@ class TopicCrawler:
                                     'title': paper_data.get('title', ''),
                                     'abstract': paper_data.get('abstract', ''),
                                     'published': self.parse_date(paper_data.get('date', '')),
-                                    'pdf_url': paper_data.get('pdf', ''),
-                                    'entry_url': paper_data.get('link', ''),
+                                    'pdf_url': f'https://arxiv.org/pdf/{paper_id}.pdf',
+                                    'entry_url': f'https://arxiv.org/abs/{paper_id}',
                                 }
 
                                 papers.append(paper_info)
@@ -561,5 +560,5 @@ class TopicCrawler:
 
 # 使用示例
 if __name__ == "__main__":
-    crawler = TopicCrawler(keyword="人工智能", max_results=100)
+    crawler = TopicCrawler(keyword="transformer", max_results=100)
     crawler.main()
