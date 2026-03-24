@@ -1,0 +1,119 @@
+/* ==================== 样式重置 ==================== */
+/* 作用：清除浏览器默认样式，确保跨浏览器一致性 */
+
+/* 1. 基础重置 */
+*, *::before, *::after {
+  margin: 0;                     /* 清除所有默认外边距 */
+  padding: 0;                    /* 清除所有默认内边距 */
+  box-sizing: border-box;        /* 盒模型：宽度包含边框和内边距 */
+}
+
+/* 2. 根元素设置 */
+html {
+  font-size: 16px;               /* 基础字体大小：16px（1rem = 16px） */
+  -webkit-text-size-adjust: 100%; /* 禁止iOS字体缩放 */
+  -moz-text-size-adjust: 100%;   /* 禁止Firefox字体缩放 */
+  text-size-adjust: 100%;        /* 禁止字体缩放 */
+}
+
+/* 3. 页面主体设置 */
+body {
+  font-family: $font-family-sans; /* 使用定义的字体族 */
+  font-size: $font-size-base;     /* 基础字体大小：16px */
+  line-height: 1.5;               /* 行高：字体大小的1.5倍 */
+  color: $color-gray-700;         /* 基础文字颜色：深灰色 */
+  background-color: $color-white; /* 背景色：白色 */
+  -webkit-font-smoothing: antialiased; /* Mac字体抗锯齿 */
+  -moz-osx-font-smoothing: grayscale;  /* Firefox字体平滑 */
+}
+
+/* 4. 链接重置 */
+a {
+  color: inherit;                /* 继承父元素文字颜色 */
+  text-decoration: none;         /* 去除下划线 */
+  background-color: transparent; /* 透明背景 */
+}
+
+/* 5. 标题重置 */
+h1, h2, h3, h4, h5, h6 {
+  font-size: inherit;            /* 继承字体大小 */
+  font-weight: inherit;          /* 继承字体粗细 */
+}
+
+/* 6. 列表重置 */
+ul, ol {
+  list-style: none;              /* 去除列表标记 */
+}
+
+/* 7. 图片重置 */
+img, picture, video, canvas, svg {
+  display: block;                /* 块级显示 */
+  max-width: 100%;               /* 最大宽度100%（响应式） */
+  height: auto;                  /* 高度自适应 */
+}
+
+/* 8. 表单元素重置 */
+input, button, textarea, select {
+  font: inherit;                 /* 继承字体设置 */
+  color: inherit;                /* 继承颜色 */
+  background-color: transparent; /* 透明背景 */
+  border: none;                  /* 无边框 */
+  outline: none;                 /* 无轮廓线 */
+}
+
+/* 9. 按钮重置 */
+button {
+  cursor: pointer;               /* 鼠标指针：手型 */
+  user-select: none;             /* 禁止文本选中 */
+}
+
+/* 10. 表格重置 */
+table {
+  border-collapse: collapse;     /* 边框合并 */
+  border-spacing: 0;             /* 边框间距为0 */
+}
+
+/* 11. 媒体元素重置 */
+iframe {
+  border: none;                  /* 无边框 */
+}
+
+/* 12. 隐藏元素 */
+[hidden] {
+  display: none !important;      /* 强制隐藏 */
+}
+ul, ol {
+  list-style: none;
+}
+
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+input, button, textarea, select {
+  font: inherit;
+  color: inherit;
+  background-color: transparent;
+  border: none;
+  outline: none;
+}
+
+button {
+  cursor: pointer;
+  user-select: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+iframe {
+  border: none;
+}
+
+[hidden] {
+  display: none !important;
+}
